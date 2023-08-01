@@ -1,0 +1,130 @@
+<% layout('layout/boilerplate') %>
+    <link rel="stylesheet" href="/stylesheets/stars.css">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="<%= computerBuild.imgURL %>" alt="<%= computerBuild._id %>" class="img-fluid border">
+            </div>
+            <div class="col-md-6">
+                <h1>
+                    <%= computerBuild.name %>
+                </h1>
+                <h1 style="font-size: medium;">
+                    (Build no. <%= computerBuild._id %>)
+                        <br> Made by <%= computerBuild.author %>
+                        <br> Recommended for <%= computerBuild.category %>
+                </h1>
+                <h1>$<%= computerBuild.price %>
+                </h1>
+                </h1>
+                <h1 style="font-size:medium">
+                    <br>
+                    <%= computerBuild.mobo %>
+                        <br>
+                        <%= computerBuild.cpu %>
+                            <br>
+                            <%= computerBuild.gpu %>
+                                <br>
+                                <%= computerBuild.memory %>
+                                    <br>
+                                    <%= computerBuild.storage %>
+                                        <br>
+                                        <%= computerBuild.fan %>
+                                            <br>
+                                            <%= computerBuild.psu %>
+                                                <br>
+                                                <%= computerBuild.housing %>
+                </h1>
+                <div class="d-flex">
+                    <% if (currentUser) { %>
+                        <form action="/builds/<%= computerBuild._id %>/compliment" method="POST">
+                            <button class="btn btn-success">Compliment</button>
+                        </form>
+                        <% } %>
+                </div>
+                <div class="d-flex">
+                    <% if (currentUser && (currentUser.role==='admin' || currentUser.role==='employee')) { %>
+                        <form action="/builds/<%= computerBuild._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                        <% } %>
+                </div>
+                <div class="d-flex">
+                    <% if (currentUser) { %>
+                        <form action="/cart/<%= computerBuild._id %>" method="POST">
+                            <label for="quantity">Quantity</label>
+                            <input name="quantity" id="quantity" type="number" min='1' value='1' style="width: 40px">
+                            <button class="btn btn-primary">Add to Cart</button>
+                        </form>
+                        <% } %>
+                </div>
+                <form action="/builds/<%= computerBuild._id %>/reviews" method="POST" novalidate
+                    class="mb-3 validated-form">
+                    <h2>Leave A Review</h2>
+
+                    <fieldset class="starability-basic">
+                        <legend>Rating:</legend>
+                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked
+                            aria-label="No rating." />
+                        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                        <label for="first-rate1" title="Terrible">1 star</label>
+                        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                        <label for="first-rate2" title="Not good">2 stars</label>
+                        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                        <label for="first-rate3" title="Average">3 stars</label>
+                        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                        <label for="first-rate4" title="Very good">4 stars</label>
+                        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                        <label for="first-rate5" title="Amazing">5 stars</label>
+                    </fieldset>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="body">Comment</label>
+                        <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3"
+                            required></textarea>
+                    </div>
+                    <button class="btn btn-success">Submit</button>
+                </form>
+                <div class="col-md-6">
+                    <h2>Reviews</h2>
+                    <% for (let review of computerBuild.reviews) { %>
+                        <div class="card mb-3"
+                            style="<%= review.rating < 3 ? 'background-color: #ffe6e6' : 'background-color: #e6ffe6' %>">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Rating: <%= review.rating %>
+                                        <p class="starability-result" data-rating="<%= review.rating %>">
+                                            Rated: <%= review.rating %> stars
+                                        </p>
+                                </h5>
+                                <p class="card-text">
+                                    <% if (review.author) { %>
+                                        Author: <%= review.author.username %><br>
+                                            <% } else { %>
+                                                Author: visitor<br>
+                                                <% } %>
+                                                    Review: <%= review.body %>
+                                                        <% if (currentUser && currentUser.role==='admin' ) { %>
+                                                            <form
+                                                                action="/builds/<%=computerBuild._id%>/reviews/<%=review._id%>?_method=DELETE"
+                                                                method="POST">
+                                                                <button class="btn btn-sm btn-danger">Delete</button>
+                                                            </form>
+                                                            <% } %>
+                                </p>
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
+                <footer>
+                    <a href="/builds">Back to All Builds</a>
+                </footer>
+            </div>
+        </div>
+    </div>

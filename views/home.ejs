@@ -1,0 +1,71 @@
+<% layout('layout/boilerplate') %>
+
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+    </head>
+
+    <body>
+        <h1>Top Builds</h1>
+        <div class="row">
+            <% computerBuild.sort((a, b)=> {
+                const aAvgRating = a.reviews.reduce((acc, cur) => acc + cur.rating, 0) / a.reviews.length;
+                const bAvgRating = b.reviews.reduce((acc, cur) => acc + cur.rating, 0) / b.reviews.length;
+                return bAvgRating - aAvgRating;
+                }).slice(0, 4).forEach((item) => { %>
+                <div class="col-md-3">
+                    <a href="/builds/<%= item._id %>">
+                        <div class="card mb-4">
+                            <div class="card-image">
+                                <img src="<%= item.imgURL %>" class="card-img-top img-fluid square-image"
+                                    alt="<%= item._id %>">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= item.name %>
+                                </h5>
+                                <h5 class="card-title" style="font-size: small;">
+                                    (Build no. <%= item._id %> )
+                                </h5>
+                                <p class="card-text">$<%= item.price %>
+                                </p>
+                                <p class="card-text">Avg Rating: <%= (item.reviews.reduce((acc, cur)=>
+                                        acc + cur.rating, 0) / item.reviews.length).toFixed(1) %> stars
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <% }); %>
+        </div>
+        <h1>Latest Items</h1>
+        <div class="row">
+            <% for (let item of latestItems) { %>
+                <div class="col-md-3">
+                    <a href="/computerItems/<%= item._id %>">
+                        <div class="card mb-4">
+                            <div class="card-image">
+                                <img src="<%= item.imgURL %>" class="card-img-top img-fluid square-image"
+                                    alt="<%= item._id %>">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= item.name %>
+                                </h5>
+                                <p class="card-text">$<%= item.price %>
+                                </p>
+
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <% } %>
+        </div>
+    </body>
+
+
+    </html>

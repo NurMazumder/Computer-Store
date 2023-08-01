@@ -1,0 +1,98 @@
+<% layout('layout/boilerplate') %>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+</head>
+
+<body>
+    <h1>CART</h1>
+    <% let total = 0 %>
+    <% for(let item of itemList) { %>
+        <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-image">
+                        <img src="<%= item.imgURL %>"
+                            class="card-img-top img-fluid square-image"
+                            alt="<%= item.name %>">
+                    </div>
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <%= item.name %>
+                        </h5>
+                        <h5 class="card-body">
+                            $<%= item.price %>
+                        </h5>
+                    </div>
+                    <div class="d-flex">
+                            <form action="/cart/<%= item._id %>?_method=PUT" method="POST">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+                    </div>
+
+                </div>
+        </div>
+        <% total += item.price %>
+    <% } %> 
+
+    <div class="card mb-4"> 
+        <div class="card-body">
+            <h2> SUBTOTAL: $<%= total %> </h2>
+        </div>
+    </div>
+
+    <form action="/checkout">
+        <% if(!incompatibility) { %>
+        <% let containsBuild = containsMobo && containsCPU && containsGPU && containsMemory && containsStorage && containsFan && containsPSU && containsCase; %>
+        <% if(!containsBuild && !prebuilt){ %>
+            Remaining items needed to create a build:
+            <br>
+            <% if(!containsMobo){ %>
+                * Motherboard
+                <br>
+            <% } if(!containsCPU){ %>
+                * CPU
+                <br>
+            <% } if(!containsGPU){ %>
+                * GPU
+                <br>
+            <% } if(!containsMemory){ %>
+                * Memory
+                <br>
+            <% } if(!containsStorage){ %>
+                * Storage
+                <br>
+            <% } if(!containsFan){ %>
+                * Cooling
+                <br>
+            <% } if(!containsPSU){ %>
+                * PSU
+                <br>
+            <% } if(!containsCase){ %>
+                * Case
+                <br>
+            <% } %>
+            Or, consider choosing one of our premade builds.
+            <br>
+        <% } else if (prebuilt) { %>
+            Your cart contains a premade PC build.
+            <br>
+        <% } else { %>
+            Your cart contains a compatible PC build!
+            <br>
+        <% } %>
+        
+        
+        <button class="btn btn-primary">Checkout</button>
+        <% } else { %>
+            Your order contains incompatibility between two or more parts. You cannot place an order with these items together.
+            <br>
+        <% } %>
+    </form>
+</body>
+
+</html>
